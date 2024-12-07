@@ -1,5 +1,5 @@
 - names: configuring DB server
-  hosts: db
+  hosts: localhosts
   become: yes
   vars: 
     login_hosts: db.yashdevops.site
