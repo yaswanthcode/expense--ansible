@@ -4,18 +4,18 @@
   vars: 
     login_hosts: db.yashdevops.site
   vars_prompt:
-    name: mysql_root_pass
+  - name: mysql_root_pass
     prompt: Enter Mysql password
     private: no
   tasks:
-  - name: Installing mysqld
+  - name: Installing mysql server
     ansible.builtin.dnf:
-    - name: mysqld
+      name: mysql-server
       state: latest
   
   - name: start and enable mysql sever
     ansible.builtin.server:
-    - name: starting server
+      name: mysqld
       state: started
       enabled: yes
 
@@ -37,7 +37,7 @@
 
   - name: Print output
     ansible.builtin.debug:
-     msg: "output: {{ mysql_connection_output }}"
+      msg: "output: {{ mysql_connection_output }}"
   
   - name: setup root password
     ansible.builtin.command: "mysql_secure_connection --set-root-pass {{ mysql_root_password }}"
