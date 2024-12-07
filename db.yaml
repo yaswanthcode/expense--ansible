@@ -1,0 +1,44 @@
+- names: configuring DB server
+  hosts: db
+  decome: yes
+  vars: 
+    login_hosts: db.yashdevops.site
+  vars_prompt:
+    name: mysql_root_pass
+    prompt: Enter Mysql password
+    private: no
+  tasks:
+  - name: Installing mysqld
+    ansible.builtin.dnf:
+    - name: mysqld
+      state: latest
+  
+  - name: start and enable mysql sever
+    ansible.builtin.server:
+    - name: starting server
+      state: started
+      enabled: yes
+
+  - name: Install python dependencies
+    ansible.builtin.pip:
+      name:
+      - MyPySQL
+      - cryptography
+      executable: pip3.9
+
+  - name: check db connection
+    community.mysql.mysql_info:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      login_hosts: "{{ login_hosts }}"
+      filter: version
+    ignore_errors: yes
+    register: mysql_connection_output
+
+  - name: Print output
+    ansible.builtin.debug:
+     msg: "output: {{ mysql_connection_output }}"
+  
+  - name: setup root password
+    ansible.builtin.command: "mysql_secure_connection --set-root-pass {{ mysql_root_password }}"
+    when: mysql_connection_output.failed is true
