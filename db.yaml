@@ -1,6 +1,6 @@
 - names: configuring DB server
   hosts: db
-  decome: yes
+  become: yes
   vars: 
     login_hosts: db.yashdevops.site
   vars_prompt:
